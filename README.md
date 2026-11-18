@@ -241,6 +241,13 @@ No source file in `src/` mentions the original client by name.
 - Failed lookups are cached briefly, and artwork/lyrics caches are bounded, so
   the mod does not hammer either service while a song repeats.
 
+
+
+
+
+  (some elements are made by AI)
+
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
