@@ -1,0 +1,48 @@
+{
+  "spotifyhud.config.title": "Spotify HUD Settings",
+  "spotifyhud.config.windows_only": "Auto Detect needs Windows 10 or 11 - the HUD stays idle on this platform.",
+  "spotifyhud.category.general": "General",
+  "spotifyhud.category.appearance": "Appearance",
+  "spotifyhud.category.layout": "Layout & Style",
+
+  "spotifyhud.option.enabled": "HUD Enabled",
+  "spotifyhud.option.auto_detect": "Auto Detect",
+  "spotifyhud.option.album_art": "Album Art",
+  "spotifyhud.option.progress_bar": "Progress Bar",
+  "spotifyhud.option.lyrics": "Lyrics",
+  "spotifyhud.option.controls": "Controls",
+  "spotifyhud.option.shadow": "Shadow",
+  "spotifyhud.option.anchor": "Anchor",
+  "spotifyhud.option.theme": "Theme",
+  "spotifyhud.option.scale": "Scale",
+  "spotifyhud.option.width": "Card Width",
+  "spotifyhud.option.radius": "Corner Radius",
+  "spotifyhud.option.opacity": "Background",
+  "spotifyhud.option.lyric_lines": "Lyric Lines",
+  "spotifyhud.option.position": "Move HUD...",
+  "spotifyhud.option.reset": "Reset Defaults",
+
+  "spotifyhud.value.on": "On",
+  "spotifyhud.value.off": "Off",
+
+  "spotifyhud.anchor.top_left": "Top Left",
+  "spotifyhud.anchor.top_right": "Top Right",
+  "spotifyhud.anchor.bottom_left": "Bottom Left",
+  "spotifyhud.anchor.bottom_right": "Bottom Right",
+
+  "spotifyhud.theme.spotify_dark": "Spotify Dark",
+  "spotifyhud.theme.midnight": "Midnight",
+  "spotifyhud.theme.light": "Light",
+  "spotifyhud.theme.minimal": "Minimal",
+
+  "spotifyhud.position.title": "Move Spotify HUD",
+  "spotifyhud.position.hint": "Drag the HUD to move it. Release to save.",
+  "spotifyhud.position.reset": "Reset Position",
+
+  "spotifyhud.hud.nothing_playing": "Nothing playing",
+  "spotifyhud.hud.start_spotify": "Start Spotify to begin",
+  "spotifyhud.hud.loading_lyrics": "Loading lyrics...",
+
+  "spotifyhud.key.open_config": "Open Spotify HUD settings",
+  "spotifyhud.key.category": "Spotify HUD"
+}

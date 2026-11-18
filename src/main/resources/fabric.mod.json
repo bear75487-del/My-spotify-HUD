@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "spotifyhud",
+  "version": "${version}",
+  "name": "Spotify HUD",
+  "description": "A standalone Spotify now-playing overlay with album art, a progress bar, and synced LRC lyrics.",
+  "authors": [
+    "Spotify HUD contributors"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/spotifyhud/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.spotifyhud.SpotifyHudMod"
+    ],
+    "modmenu": [
+      "dev.spotifyhud.integration.ModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=1.21.1 <1.21.2",
+    "java": ">=21",
+    "fabric-api": "*",
+    "modmenu": ">=11.0.0"
+  }
+}
