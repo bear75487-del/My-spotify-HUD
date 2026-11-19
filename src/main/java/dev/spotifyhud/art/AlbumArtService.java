@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.spotifyhud.SpotifyHudMod;
+import dev.spotifyhud.hud.LinearFilteredTexture;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -235,11 +236,10 @@ public final class AlbumArtService implements AutoCloseable {
                 client.getTextureManager().destroyTexture(previous);
             }
 
-            NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
             // Bilinear filtering is essential here: a 600x600 cover is drawn
             // into a 44x44 area, and nearest-neighbour sampling would make it
             // look blocky at every GUI scale.
-            texture.setFilter(true, false);
+            NativeImageBackedTexture texture = new LinearFilteredTexture(() -> "spotifyhud album art", image);
             client.getTextureManager().registerTexture(identifier, texture);
             this.textures.put(art.mediaKey(), identifier);
             this.evictOldTextures();
@@ -251,9 +251,9 @@ public final class AlbumArtService implements AutoCloseable {
     /**
      * Copies a decoded {@link BufferedImage} into an RGBA NativeImage.
      *
-     * <p>{@code NativeImage.setColor} writes the raw integer into RGBA memory,
-     * which means the integer is ABGR on little-endian systems. BufferedImage
-     * hands out ARGB, so the red and blue channels have to be swapped.</p>
+     * <p>{@code NativeImage.setColorArgb} takes the same packed ARGB value
+     * that {@link BufferedImage#getRGB} returns, so no channel swapping is
+     * needed.</p>
      */
     private static NativeImage toNativeImage(BufferedImage source) {
         int width = source.getWidth();
@@ -263,17 +263,11 @@ public final class AlbumArtService implements AutoCloseable {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                image.setColor(x, y, toAbgr(pixels[y * width + x]));
+                image.setColorArgb(x, y, pixels[y * width + x]);
             }
         }
 
         return image;
-    }
-
-    private static int toAbgr(int argb) {
-        return (argb & 0xFF00FF00)
-                | ((argb & 0x000000FF) << 16)
-                | ((argb & 0x00FF0000) >>> 16);
     }
 
     /**
@@ -316,10 +310,10 @@ public final class AlbumArtService implements AutoCloseable {
             return;
         }
 
-        int color = image.getColor(x, y);
+        int color = image.getColorArgb(x, y);
         int alpha = (color >>> 24) & 0xFF;
         int maskedAlpha = (int) Math.round(alpha * coverage);
-        image.setColor(x, y, (color & 0x00FFFFFF) | (maskedAlpha << 24));
+        image.setColorArgb(x, y, (color & 0x00FFFFFF) | (maskedAlpha << 24));
     }
 
     private void evictOldTextures() {

@@ -44,5 +44,6 @@
   "spotifyhud.hud.loading_lyrics": "Loading lyrics...",
 
   "spotifyhud.key.open_config": "Open Spotify HUD settings",
-  "spotifyhud.key.category": "Spotify HUD"
+  "spotifyhud.key.category": "Spotify HUD",
+  "key.category.spotifyhud.main": "Spotify HUD"
 }

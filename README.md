@@ -1,6 +1,6 @@
 # Spotify HUD
 
-A standalone, client-side Minecraft **1.21.1 Fabric** mod that shows the track
+A standalone, client-side Minecraft **1.21.11 Fabric** mod that shows the track
 currently playing in the Spotify desktop app as a compact on-screen overlay.
 
 The feature was extracted from a larger client and rebuilt from scratch: no
@@ -32,23 +32,24 @@ iTunes artwork lookup, and the LRCLIB lyrics lookup, all re-implemented here.
 
 | Component | Version |
 | --- | --- |
-| Minecraft | 1.21.1 |
-| Fabric Loader | 0.16.0+ |
-| Fabric API | any 1.21.1 build |
-| Mod Menu | 11.0.0+ |
+| Minecraft | 1.21.11 |
+| Fabric Loader | 0.20.1+ |
+| Fabric API | any 1.21.11 build |
+| Mod Menu | 17.0.0+ (optional) |
 | Java | 21+ |
 | OS for auto detection | Windows 10 or 11 |
 
-Mod Menu is a declared dependency because the settings screen is exposed
-through it. On non-Windows systems the mod loads and the settings screen still
-works, but the overlay stays on its idle "Nothing playing" state.
+Mod Menu is optional: when it is installed the settings screen is exposed
+through it, otherwise the keybind still opens the screen. On non-Windows
+systems the mod loads and the settings screen still works, but the overlay
+stays on its idle "Nothing playing" state.
 
 ---
 
 ## Build
 
-A JDK 21 is required to run Gradle (the wrapper uses Gradle 8.12, which is the
-minimum supported by Fabric Loom 1.9.2).
+A JDK 25 is required to run Gradle (the wrapper uses Gradle 9.8.2 with Fabric
+Loom 1.19.3); the mod itself is compiled for Java 21.
 
 ```powershell
 # From the spotify-hud directory
@@ -58,11 +59,11 @@ minimum supported by Fabric Loom 1.9.2).
 The remapped mod jar is written to:
 
 ```
-build/libs/spotify-hud-1.0.0.jar
+build/libs/spotify-hud-1.0.1.jar
 ```
 
-Copy it together with Fabric API and Mod Menu into your `.minecraft/mods`
-folder.
+Copy it together with Fabric API into your `.minecraft/mods` folder (Mod Menu
+is optional).
 
 For development:
 

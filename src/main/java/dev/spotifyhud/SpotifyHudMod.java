@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +61,7 @@ public final class SpotifyHudMod implements ClientModInitializer {
                 "spotifyhud.key.open_config",
                 InputUtil.Type.KEYSYM,
                 InputUtil.UNKNOWN_KEY.getCode(),
-                "spotifyhud.key.category"
+                KeyBinding.Category.create(Identifier.of(MOD_ID, "main"))
         ));
 
         HudRenderCallback.EVENT.register((context, tickCounter) -> {

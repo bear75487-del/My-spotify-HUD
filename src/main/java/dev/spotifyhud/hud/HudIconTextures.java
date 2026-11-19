@@ -1,6 +1,5 @@
 package dev.spotifyhud.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.spotifyhud.SpotifyHudMod;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -10,6 +9,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -63,19 +63,12 @@ public final class HudIconTextures {
             return;
         }
 
-        float alpha = (color >>> 24) / 255.0F;
-        float red = (color >> 16 & 0xFF) / 255.0F;
-        float green = (color >> 8 & 0xFF) / 255.0F;
-        float blue = (color & 0xFF) / 255.0F;
-
-        RenderSystem.setShaderColor(red, green, blue, alpha);
+        // 1.21.11 applies the tint through the vertex colour parameter, so the
+        // texture itself can stay plain white.
+        //
         // The destination size is also used as the texture size, so the UVs
         // span the whole 64x64 glyph.
-        context.drawTexture(texture, x, y, 0.0F, 0.0F, size, size, size, size);
-        // Flush before resetting the shader colour; otherwise the tint would
-        // be applied to whatever is drawn next instead of this icon.
-        context.draw();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, x, y, 0.0F, 0.0F, size, size, size, size, color);
     }
 
     private static Identifier play() {
@@ -164,13 +157,12 @@ public final class HudIconTextures {
         NativeImage image = new NativeImage(SIZE, SIZE, false);
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
-                image.setColor(x, y, buffer.getRGB(x, y));
+                image.setColorArgb(x, y, buffer.getRGB(x, y));
             }
         }
 
-        NativeImageBackedTexture texture = new NativeImageBackedTexture(image);
         // Bilinear filtering keeps the 64x64 glyphs smooth when scaled down.
-        texture.setFilter(true, false);
+        NativeImageBackedTexture texture = new LinearFilteredTexture(() -> "spotifyhud hud icon: " + name, image);
 
         Identifier identifier = Identifier.of(SpotifyHudMod.MOD_ID, "hud_icons/" + name);
         MinecraftClient.getInstance().getTextureManager().registerTexture(identifier, texture);

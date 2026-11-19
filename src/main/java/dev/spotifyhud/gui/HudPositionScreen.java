@@ -7,6 +7,7 @@ import dev.spotifyhud.hud.HudBounds;
 import dev.spotifyhud.hud.SpotifyHudRenderer;
 import dev.spotifyhud.playback.TrackInfo;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
@@ -65,8 +66,9 @@ public final class HudPositionScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        // Background first so the HUD sits on top of the darkened world.
-        this.renderBackground(context, mouseX, mouseY, delta);
+        // 1.21.11 calls renderBackground() before render(), so the darkened /
+        // blurred world is already on screen here; calling it again would trip
+        // "Can only blur once per frame".
 
         SpotifyHudRenderer renderer = SpotifyHudMod.getRenderer();
         MinecraftClient client = MinecraftClient.getInstance();
@@ -79,7 +81,14 @@ public final class HudPositionScreen extends Screen {
 
             HudBounds bounds = renderer.bounds(client, track, renderer.hasLyrics(track));
             int outline = this.dragging ? 0xCC1DB954 : 0x99FFFFFF;
-            context.drawBorder(bounds.x() - 2, bounds.y() - 2, bounds.width() + 4, bounds.height() + 4, outline);
+            int borderX = bounds.x() - 2;
+            int borderY = bounds.y() - 2;
+            int borderWidth = bounds.width() + 4;
+            int borderHeight = bounds.height() + 4;
+            context.fill(borderX, borderY, borderX + borderWidth, borderY + 1, outline);
+            context.fill(borderX, borderY + borderHeight - 1, borderX + borderWidth, borderY + borderHeight, outline);
+            context.fill(borderX, borderY, borderX + 1, borderY + borderHeight, outline);
+            context.fill(borderX + borderWidth - 1, borderY, borderX + borderWidth, borderY + borderHeight, outline);
         }
 
         // Draw the widgets after the HUD so the action row stays readable and
@@ -96,42 +105,42 @@ public final class HudPositionScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (click.button() == 0) {
             HudBounds bounds = this.currentBounds();
-            if (bounds.contains(mouseX, mouseY)) {
+            if (bounds.contains(click.x(), click.y())) {
                 this.dragging = true;
-                this.grabX = (int) mouseX - bounds.x();
-                this.grabY = (int) mouseY - bounds.y();
+                this.grabX = (int) click.x() - bounds.x();
+                this.grabY = (int) click.y() - bounds.y();
                 return true;
             }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (this.dragging && button == 0) {
+    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
+        if (this.dragging && click.button() == 0) {
             HudBounds bounds = this.currentBounds();
-            int targetX = (int) Math.round(mouseX) - this.grabX;
-            int targetY = (int) Math.round(mouseY) - this.grabY;
+            int targetX = (int) Math.round(click.x()) - this.grabX;
+            int targetY = (int) Math.round(click.y()) - this.grabY;
             this.moveTo(targetX, targetY, bounds.width(), bounds.height());
             return true;
         }
 
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return super.mouseDragged(click, offsetX, offsetY);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (this.dragging && button == 0) {
+    public boolean mouseReleased(Click click) {
+        if (this.dragging && click.button() == 0) {
             this.dragging = false;
             SpotifyHudMod.saveConfig();
             return true;
         }
 
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     @Override

@@ -11,16 +11,17 @@ import dev.spotifyhud.playback.TrackInfo;
 import java.util.Locale;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.joml.Matrix3x2fStack;
 
 /**
  * Stateless-ish renderer for the overlay.
  *
  * <p>All geometry is expressed in base pixels and then scaled through the
- * {@link MatrixStack}, so the layout code does not have to know about the
+ * {@link Matrix3x2fStack}, so the layout code does not have to know about the
  * configured HUD scale. The only state is the animation clock used by the
  * current lyric line.</p>
  */
@@ -105,15 +106,15 @@ public final class SpotifyHudRenderer {
         LyricsDoc doc = this.config.showLyrics ? this.lyricsService.docFor(safeTrack) : null;
         HudBounds bounds = this.bounds(client, safeTrack, doc != null);
 
-        MatrixStack matrices = context.getMatrices();
-        matrices.push();
-        matrices.translate(bounds.x(), bounds.y(), 0.0F);
-        matrices.scale(this.config.scale, this.config.scale, 1.0F);
+        Matrix3x2fStack matrices = context.getMatrices();
+        matrices.pushMatrix();
+        matrices.translate(bounds.x(), bounds.y());
+        matrices.scale(this.config.scale, this.config.scale);
 
         try {
             this.draw(context, client, safeTrack, doc);
         } finally {
-            matrices.pop();
+            matrices.popMatrix();
         }
     }
 
@@ -198,7 +199,7 @@ public final class SpotifyHudRenderer {
         if (texture != null) {
             // Passing the destination size as the texture size makes the UVs
             // span the whole dynamic texture (covers are 600x600).
-            context.drawTexture(texture, x, y, 0.0F, 0.0F, ART_SIZE, ART_SIZE, ART_SIZE, ART_SIZE);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, x, y, 0.0F, 0.0F, ART_SIZE, ART_SIZE, ART_SIZE, ART_SIZE);
         } else {
             int placeholder = ColorUtil.withOpacity(theme.accent(), 0.20F);
             RoundedRect.fill(context, x, y, ART_SIZE, ART_SIZE, 6, placeholder);

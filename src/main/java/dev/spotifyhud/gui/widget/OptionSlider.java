@@ -4,6 +4,7 @@ import dev.spotifyhud.hud.RoundedRect;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.Text;
@@ -149,8 +150,8 @@ public final class OptionSlider extends SliderWidget {
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
+    public void onRelease(Click click) {
+        super.onRelease(click);
         this.onCommit.run();
     }
 }
