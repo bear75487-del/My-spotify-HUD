@@ -2,6 +2,7 @@ package dev.spotifyhud.gui;
 
 import dev.spotifyhud.SpotifyHudMod;
 import dev.spotifyhud.config.HudAnchor;
+import dev.spotifyhud.config.HudLayout;
 import dev.spotifyhud.config.HudTheme;
 import dev.spotifyhud.config.SpotifyHudConfig;
 import dev.spotifyhud.gui.widget.OptionSlider;
@@ -77,6 +78,10 @@ public final class SpotifyHudConfigScreen extends Screen {
 
         this.addToggle(left, y, columnWidth, "spotifyhud.option.shadow",
                 () -> this.config.shadow, value -> this.config.shadow = value);
+        y += ROW_HEIGHT;
+
+        this.addToggle(left, y, columnWidth, "spotifyhud.option.equalizer",
+                () -> this.config.showEqualizer, value -> this.config.showEqualizer = value);
 
         // ------------------------------------------------------------------
         // Right column: anchor, theme, and visual sliders.
@@ -87,6 +92,13 @@ public final class SpotifyHudConfigScreen extends Screen {
                 HudAnchor.values(),
                 () -> this.config.anchor,
                 value -> this.config.anchor = value,
+                value -> Text.translatable(value.translationKey()));
+        y += ROW_HEIGHT;
+
+        this.addCycle(right, y, columnWidth, Text.translatable("spotifyhud.option.layout"),
+                HudLayout.values(),
+                () -> this.config.layout,
+                value -> this.config.layout = value,
                 value -> Text.translatable(value.translationKey()));
         y += ROW_HEIGHT;
 
@@ -129,8 +141,8 @@ public final class SpotifyHudConfigScreen extends Screen {
         // ------------------------------------------------------------------
         // Bottom action row.
         // ------------------------------------------------------------------
-        int buttonWidth = Math.min(120, Math.max(60, (this.width - 40 - BUTTON_GAP * 2) / 3));
-        int totalWidth = buttonWidth * 3 + BUTTON_GAP * 2;
+        int buttonWidth = Math.min(110, Math.max(54, (this.width - 40 - BUTTON_GAP * 3) / 4));
+        int totalWidth = buttonWidth * 4 + BUTTON_GAP * 3;
         int buttonX = (this.width - totalWidth) / 2;
         int buttonY = this.height - 26;
 
@@ -141,6 +153,12 @@ public final class SpotifyHudConfigScreen extends Screen {
                 .build());
 
         this.addDrawableChild(ButtonWidget.builder(
+                        Text.translatable("spotifyhud.option.colors"),
+                        button -> MinecraftClient.getInstance().setScreen(new HudColorsScreen(this)))
+                .dimensions(buttonX + (buttonWidth + BUTTON_GAP), buttonY, buttonWidth, ROW_HEIGHT)
+                .build());
+
+        this.addDrawableChild(ButtonWidget.builder(
                         Text.translatable("spotifyhud.option.reset"),
                         button -> {
                             this.config.resetToDefaults();
@@ -148,13 +166,13 @@ public final class SpotifyHudConfigScreen extends Screen {
                             // Rebuild the screen so every widget shows the new values.
                             MinecraftClient.getInstance().setScreen(new SpotifyHudConfigScreen(this.parent));
                         })
-                .dimensions(buttonX + buttonWidth + BUTTON_GAP, buttonY, buttonWidth, ROW_HEIGHT)
+                .dimensions(buttonX + (buttonWidth + BUTTON_GAP) * 2, buttonY, buttonWidth, ROW_HEIGHT)
                 .build());
 
         this.addDrawableChild(ButtonWidget.builder(
                         Text.translatable("gui.done"),
                         button -> this.close())
-                .dimensions(buttonX + (buttonWidth + BUTTON_GAP) * 2, buttonY, buttonWidth, ROW_HEIGHT)
+                .dimensions(buttonX + (buttonWidth + BUTTON_GAP) * 3, buttonY, buttonWidth, ROW_HEIGHT)
                 .build());
     }
 

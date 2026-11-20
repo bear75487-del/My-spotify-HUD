@@ -3,7 +3,7 @@
   "id": "spotifyhud",
   "version": "${version}",
   "name": "Spotify HUD",
-  "description": "A standalone Spotify now-playing overlay with album art, a progress bar, and synced LRC lyrics.",
+  "description": "A standalone Spotify now-playing overlay with album art, synced LRC lyrics, an animated equalizer, four layouts, and per-element colors with presets.",
   "authors": [
     "Spotify HUD contributors"
   ],
